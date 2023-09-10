@@ -1,0 +1,174 @@
+ - refactor all quantity formatting to use the OMNeT++ 6.1 quantity formatter (e.g. 160000000 Hz -> 160 MHz)
+   - replace long2string and double2string in Units.msg
+
+ - python support for running simulations/tests/etc. using OMNeT++ 6.1 which should contain the necessary python support
+
+ - Qtenv packet log support via packet tags using INET modules similar to visualizers that hook into protocols
+   - following wireless communication is almost impossible in the packet log
+   - add filtering for technical/physical/link/network/transport/application levels (link should be the default)
+   - support following TCP streams
+
+ - restructure StandardHost to make it flexible enough to replace all current network node types which are basically copied from StandardHost and slightly modified
+   - use @reconnect to simplify network nodes which copy big parts of StandardHost
+   - revise all network node module base class hierarchy (e.g. mpls nodes)
+
+ - restructure StandardHost to include a separate LLC layer which contains:
+   - a separate packet classifier (LlcClassifier) that decides which LLC is used (if any) based on the MAC protocol for example
+   - IEEE 802.2 SNAP LLC
+   - IEEE 802 EPD LLC
+   - ZIGBEE LLC (https://lucidar.me/en/zigbee/autopsy-of-a-zigbee-frame/)
+
+ - synchronous packet processing vs message based configuration (e.g. sockets/interfaces)?
+
+ - refactor protocol modules to avoid cross module zero simulation time messaging using the FES
+   - for example (App, Udp, Ipv4, Ethernet stack) two hosts one sending to the other, one packet send is 4 distinct events (transmission start/end and reception start/end),
+     first event starts in App and ends with transmission start, next event is reception start, etc.
+
+ - extend gate schedule configurators:
+   - add support for switch processing time
+   - add support for time synchronization error
+   - allow using MAC forwarding tables for flow paths
+
+ - add TransparentProtocolRegistrationListener to PacketFilterBase as base class, but it would break
+   nearly all simulations because protocol header checker modules are also derived from PacketFilterBase
+   and this change would cause multiple protocol registrations reaching the same MessageDispatcher from
+   different paths (e.g. ethernetmac service registration starts from EthernetMacHeaderInserter and
+   ends up multiple times in the li MessageDispatcher module)
+ 
+ - IPv6 has not yet been through the same refactoring and improvements as the IPv4 model
+   after that, xMIPv6 needs to be tested and revised as well
+
+ - 802.11 statistics, logging, display strings
+ - 802.11 preamble, header, data separation in HT and VHT mode doesn't really make sense the way it's right now implemented
+   there's no separate header in these modes, the preamble is much more complicated than in the other modes
+   there's also a bug related to this in the Ieee80211ScalarTransmitter when it computes the data duration
+ - add separate Ieee80211Socket
+ - Ieee80211Mac to fire TxNotifDetails when Ack arrives for a frame. Mgmt layer
+   to use this notification to learn when ProbeRequest or AssociationResponse
+   has been transmitted.
+
+ - reduce redundancy among applications, e.g. add base application with parameterizable IO submodule, perhaps even create an IO base module which uses the ISocket interface
+
+ - add examples/documentation for matching PCP value and destination MAC address for outgoing packets (identification)
+ - example with Pcp and PriorityToTrafficClassClassifier classifier example
+
+ - come up with realistic frame replication showcases such as multiple link breaks which still produce the traffic at the destination
+ - add examples to flow measurements for store-and-forward, A-MPDU aggregation, preemption, cut-through and their effects on the bit and packet total times
+
+ - implement multicast support in one gate scheduling configurator
+
+ - compound figures should be updated to have a bounds property that contains all elements and they must not be over-determined (e.g. size vs plotSize) see topic/figures
+
+ - ThruputMeteringChannel -> result filter + visualizer for measuring the channel throughput using channel signals and result for analysis
+
+ - handlePullPacketChanged can come from the queue when
+   - a high priority frame is already being streamed and it gets interrupted
+   - a low priority frame cannot be interrupted because it's already too close to its end (remaining minPacketLength)
+   - in both cases a progress report is sent which is unnecessary and confusing
+
+ - create release script (remove trailing spaces, replace leading tabs, fix header guards, format source code)
+
+ - add parameters to ScenarioManager disconnect operation to allow cutting connection at either end (source or destination)
+   and also support disconnecting bidirectional connections in all four combinations.
+
+ - implement additional INET specific fingerprint ingredients: network interface configuration, routing table, mobility state, etc.
+ - extend timeGains/frequencyGains parsing with OMNeT++ 6.0 expression parser support (#ifdef)
+ - extend Units with double and simtime_t handling and use C++ units in division and multiplication functions
+
+ - implement MemoizedFunction and multi dimensional domain subdivision tree
+ - add parameter for orthogonal combinator function: multiplicative and minimum based
+
+ - the packet dissector may need to do implicit chunk conversion because it has to choose a representation which may or may not be the same as the one in the packet (e.g. two interoperable frameworks)
+
+ - change all protocols (where applicable) to accept any kind of cPacket (not only Packet) for interoperability with 3rd party projects 
+ - remove obsolete HostAutoConfigurator, Ipv4FlatNetworkConfigurator modules?
+ - solve dynamic node creation and address resolution in applications
+ - don't subclass APSK medium and such with other specific radios, think of APSK radio as yet another specific conceptual radio
+ - move extra functions that doesn't really belong to L3AddressResolver (e.g. findInterfaceTableOf, findIPv4RoutingTableOf)
+ - use m instead of double in Coord?
+ - replace functionality of GenericAppMsg with chunk tags, or better yet get rid of it altogether!
+ - review all examples and check if they still do what is intended
+ - add separate reusable application packet generators
+ - rewrite serializers that use structure bit fields, this is undefined C++ behavior
+
+ - replace cCompoundModule class in hosts/nodes with a specific classes such as StandardHost
+   providing getInterfaceTable, getMobility, getIPv4NetworkLayer, etc. to avoid random code fragments with getSubmodule(".ipv4.routingTable")???
+   but we should avoid having these classes for a random collections of utility functions!
+ - add separate classes/functions for iterating over the network nodes in a network or
+   finding a network node based on its mac address/ip address or finding the position of a network node, etc.
+ - add missing node NED files for existing protocols (e.g. sensor nodes, IoT devices) 
+
+ - @descriptor(false) vs @descriptor(readonly); why do we have descriptor anything at all? why don't we have descriptors for all types all the time?
+ - @editable(false) vs @descriptor(readonly)??? and in general editable is a GUI concept
+
+ - DYMOSequenceNumber: class DYMOSequenceNumber??? why class? primitive class???
+ - PacketDrop: packet_ -> packet
+ - InterfaceEntry: eliminate @getter if possible
+ - EtherType.msg: replace with Protocol.h?
+ - IPProtocolId.msg: replace with Protocol.h?
+
+ - review and refactor all applications which have lifecycle, startTime, endTime parameters, move code from initialize to separate reusable functions (e.g. for lifecycle restart)
+
+ - DHCP Client/Server should work with multiple interfaces
+
+ - examples/ospfv2/areas does not work: the UDP apps in H3 keep sending, but never receive answer; seems like
+   sent packets cannot even leave H3 (they are queued up in ARP, due to "address resolution pending")
+
+ - provide default for RoutingTable.routingTableFile once xmlinline() is implemented in omnet.
+
+ - gate labeling for the NED editor
+ - change the @labels(PPPFrame) label on pppg[] gates of hosts/routers to something slightly different
+   (e.g. @labels(PPPFrame/pk)) so that PPPInterface does not appear in the palette on network level?
+
+ - review if existing (also add missing) "q=queue" display string tags still refer to the right module?
+ - rename TCPBasicClientApp to TCPRequestReplyClientApp?
+
+ - rename the following TED.h methods to begin with a verb:
+   - unsigned int linkIndex(IPAddress advrouter, IPAddress linkid)
+   - unsigned int linkIndex(IPAddress localInf)
+   - IPAddress peerRemoteInterface(IPAddress peerIP)
+   - IPAddress primaryAddress(IPAddress localInf)
+
+ - model link failures, via isDown() method of InterfaceEntry. L2 modules
+   should understand isDown(), and FailureManager should be enhanced with
+   linkdown/linkup commands. See email on list archive on 9/17/2006 10:34 AM
+
+ - problem with NetworkConfigurator + RSVP's FailureManager: after deleting/recreating
+   LSR, configured IP addresses and host routes to PPP peers get lost.
+   Solution: implement failure/recovery with NF_FAILURE and NF_RECOVERY notifications!
+
+ - "ack" in LinkStateMsg redundant? (never read)
+   what is the TELinkInfo.state flag?
+   what is UnResvBandwidth[8] indexed with? what is [4] and [7] that gets printed?
+
+ - reading routing files: it doesn't make sense to be able to manually set MULTICAST on an interface
+
+ - apps: add startTime param; IPAddressResolver should only be invoked at startTime not in initialize()!
+
+ - MPLS/LDP/RSVP:
+    - document! ScenarioManager commands, XML file formats, unimplemented features
+
+ - generic
+   - add meaningful display strings to at least the top level submodules of network nodes (with optional formatting parameters)
+   - cache gate IDs to speed up sending
+   - revise protocol base class hierarchy (e.g. LayeredProtocolBase vs IPv4 base class, etc.)
+   - revise protocol header class hierarchy (e.g. avoid unnecessary interfaces)
+   - revise NED network node module hierarchy (e.g. MPLS nodes)
+   - nicely position submodules in compound modules, prepare for 2 info lines
+   - avoid specifying module icon sizes by default, override icon size in submodules
+
+ - cleanup
+   - review all examples to check if they still work as expected
+   - rename all modules, parameters, classes, signals, statistics, labels to have a consistent naming scheme
+   - discuss renaming *Layered* modules to *Compound* or *Modular*?
+   - if conditional connections are used, eliminate typename != "" from NED files using default interface ommitted typenames
+   - unify C++ namespaces, NED namespaces, folders and file names
+   - eliminate C style casts, especially after (Foo*)foo->dup()
+   - update all EV statements to use EV_FIELD
+   - replace cross module pointers with ModuleRef<T>
+   - bitrate vs datarate
+   - operator<<, printOn, str, etc. in all classes
+
+ - porting
+   - simuLTE PHY full support and porting to INET 4.x
+   - help ANSA porting to INET 4.x

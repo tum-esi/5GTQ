@@ -1,0 +1,3 @@
+#!/bin/sh
+
+ipython3 --no-banner -m inet.repl -i
