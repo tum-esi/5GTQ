@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config>
+<TrafficType name='video' pcp='4' fiveQi='74'/>
+<TrafficType name='best effort' pcp='0' fiveQi='5'/>
+<TrafficType name='network control' pcp='7' fiveQi='82'/>
+</config>
+
+
+<!-- <config>
+<TrafficType name='video' pcp='4' fiveQi='74' qfi = '2' />
+<TrafficType name='best effort' pcp='0' fiveQi='5' qfi = '3' />
+<TrafficType name='network control' pcp='7' fiveQi='82' qfi = '4' />
+</config>
+ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <?xml version="1.0" encoding="UTF-8" ?>
+<config>
+<TrafficType name='video' pcp='4' fiveQi='1' qfi = '2' />
+<TrafficType name='best effort' pcp='0' fiveQi='5' qfi = '3' />
+<TrafficType name='network control' pcp='7' fiveQi='86' qfi = '4' />
+</config>
+ -->
+
+
+<!-- <?xml version="1.0" encoding="UTF-8" ?>
+<config>
+<TrafficType name='video' pcp='4' fiveQi='74' qfi = '2' />
+<TrafficType name='best effort' pcp='0' fiveQi='5' qfi = '3' />
+<TrafficType name='network control' pcp='7' fiveQi='85' qfi = '4' />
+</config> -->
+
+
+
+<!-- <?xml version="1.0" encoding="UTF-8" ?>
+<config>
+<TrafficType name='video' pcp='4' fiveQi='74'/>
+<TrafficType name='best effort' pcp='0' fiveQi='5'/>
+<TrafficType name='network control' pcp='7' fiveQi='82'/>
+</config> -->
+
+
+<!-- <config>
+<TrafficType name="video" pcp="5" fiveQi="85" qfi = '2' />
+<TrafficType name="best effort" pcp="0" fiveQi="5" qfi = '3' />
+<TrafficType name="audio" pcp="3" fiveQi="2" qfi = '4' />
+<TrafficType name="network control" pcp="4" fiveQi="82" qfi = '5' />
+</config>
+ -->
+ 
+ 
+<!-- <?xml version="1.0" encoding="UTF-8" ?>
+<config>
+<TrafficType name='video' pcp='4' fiveQi='74'/>
+<TrafficType name='best effort' pcp='0' fiveQi='5'/>
+<TrafficType name='network control' pcp='7' fiveQi='82'/>
+</config> -->

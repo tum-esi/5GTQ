@@ -1,0 +1,4 @@
+<config>
+<!-- interface name='eth0' connectedUeIpAddress = '10.0.0.18' ipAddressoftheDestinationNode='10.0.0.26' macAddressOfTheDestinationNode='0A-AA-00-00-00-0B' interfaceIdOfTheUe='101'/-->
+<!--  interface name='eth0' connectedUeIpAddress = '10.0.0.2' ipAddressoftheDestinationNode='10.0.0.18' macAddressOfTheDestinationNode='0A-AA-00-00-00-02' interfaceIdOfTheUe='101'/-->
+</config>
