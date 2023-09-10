@@ -1,0 +1,63 @@
+In this example the network consists of one UE connected to one gNB and a MEC system composed of a MEC host. 
+The MEC app run outside the simulator. 
+The UE runs the UeWarningAlertApp and communicates with a real MEC App. The external MEC app communicates 
+with the simulator via the ExtLowerEthernetInterface module of the virtualisation infrastructure of the MEC
+ host, as if it were actually deployed on the MEC host.
+
+
+We configure the following scenario:
+
+   +++++++++++++++++++++++++     +++++++++++++++++++++++++ 
+   +     Namespace ns1     +     +         Simu5G        +
+   +                       +     +                       +
+   +  MEC App        [veth1]<--->[sim-veth1]             +
+   +            192.168.2.2+     +                       +
+   +                       +     +                       + 
+   +++++++++++++++++++++++++     +++++++++++++++++++++++++
+  
+IP addresses and routing tables are set up by using mrt files (see "routing" folder).
+The DeviceApp contacts the UALCMP to obtain the IP address/port of the (external) MEC App. Then, the 
+UeApp subscribes to information from the MEC Location Service. The MEC App sends notifications to the 
+UeApp when the UE enters/leaves a specific geographical zone.
+ 
+=== HOW TO BUILD AND RUN ===
+
+1) Make sure that the emulation feature is enabled in the INET project:
+
+- via the IDE: right-click on the 'inet' folder in the Project Explorer -> Properties;
+               select OMNeT++ -> Project Features; 
+               tick the box "Network emulation support".
+- via the command line: in the root INET folder, type 'opp_featuretool enable NetworkEmulationSupport'.
+
+  If the feature was disabled, recompile INET with the command 'make' (in the root INET folder).  
+
+
+2) In order to be able to send/receive packets through sockets, set the application permissions: 
+
+    sudo setcap cap_net_raw,cap_net_admin=eip path/to/opp_run
+    sudo setcap cap_net_raw,cap_net_admin=eip path/to/opp_run_dbg
+    sudo setcap cap_net_raw,cap_net_admin=eip path/to/opp_run_release
+
+
+3) Compile Simu5G from the command line by running (in the root Simu5G folder):
+    $ . setenv
+	$ make makefiles
+	$ make 
+	 	
+	 	
+4) Setup the environment by typing:
+
+    ./setup.sh	 
+	 	
+5) Launch the MEC App:
+
+    (in a new terminal window) sudo ip netns exec ns1 python3 MecApp.py
+    
+6) Run the simulation by typing:
+
+    ./run.sh
+    
+7) Clean the environment by typing:
+
+    ./teardown.sh  
+============================

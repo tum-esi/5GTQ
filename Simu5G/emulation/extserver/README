@@ -1,0 +1,74 @@
+ExtServer Emulation example
+---------------------------
+
+In this example the network consists of two UEs connected to one gNB, one UPF, 
+one router and one external (real) server.
+
+The external server sends 10MB to ue1 using TCP (in the downlink), whereas 
+ue2 sends 10MB to the external server using TCP (in the uplink).
+
+IP addresses and routing tables are set up by using mrt files (see "routing" folder).
+   
+  
++++++++++++++++++++++++++     +++++++++++++++++++++++++ 
++     Namespace ns1     +     +         Simu5G        +
++                       +     +                       +
++  Server App     [veth1]<--->[sim-veth1]             +
++            192.168.2.2+     +                       + 
++                       +     +                       +
++++++++++++++++++++++++++     +++++++++++++++++++++++++
+  
+
+How to build and run the emulation 
+----------------------------------
+
+1) Make sure that the emulation feature is enabled in the INET project:
+
+- via the IDE: right-click on the 'inet' folder in the Project Explorer -> Properties;
+               select OMNeT++ -> Project Features; 
+               tick the box "Network emulation support".
+- via the command line: in the root INET folder, type 'opp_featuretool enable NetworkEmulationSupport'.
+
+  Recompile INET with the command 'make makefiles && make' (in the root INET folder).  
+
+
+2) In order to be able to send/receive packets through sockets, set the application permissions (specify
+   the path of your OMNeT installation): 
+
+    sudo setcap cap_net_raw,cap_net_admin=eip path/to/opp_run
+    sudo setcap cap_net_raw,cap_net_admin=eip path/to/opp_run_dbg
+    sudo setcap cap_net_raw,cap_net_admin=eip path/to/opp_run_release
+
+
+3) Compile Simu5G from the command line by running (in the root Simu5G folder):
+    
+    $ . setenv
+	$ make makefiles
+	$ make MODE=release 
+	 	
+4) Setup the environment by typing:
+
+    ./setup.sh	 
+	 	
+5) Run the external server for the uplink traffic, e.g. use "iperf" with the following command (type
+   "man iperf" for options description):
+  	    
+  	(in a new terminal window) sudo ip netns exec ns1 iperf -s -p 10021 -i 1
+  	
+6) Run the simulation by typing:
+
+    ./run.sh
+   
+7) Run the external server for the downlink traffic, e.g. use "iperf" with the following command (type
+   "man iperf" for options description):
+  	    
+  	(in a new terminal window) sudo ip netns exec ns1 iperf -c 10.0.0.1 -p 10021 -i 1 -M 536.0B -n 10.0M
+   
+        
+8) Clean the environment by typing:
+
+    ./teardown.sh
+ 
+
+
+  	    

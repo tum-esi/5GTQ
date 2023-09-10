@@ -1,0 +1,72 @@
+In this example the network consists of one (real) UE connected to a (real) server.
+The emulated 5G network includes a variable number of background cells. The latter produces interference
+that affects the latency of packets exchanged between the (real) endpoints of the communication.
+
+ 
+Communication between the simulator and the host OS is realized using namespaces linked
+together via virtual ethernet (veth) interfaces. 
+In particular, we configure the following scenario:
+
++++++++++++++++++++++++++     +++++++++++++++++++++++++     +++++++++++++++++++++++++
++     Namespace ns1     +     +         Simu5G        +     +     Namespace ns2     +
++                       +     +                       +     +                       +
++  Client App     [veth1]<--->[sim-veth1]   [sim-veth2]<--->[veth2]     Server App  +
++            192.168.2.2+     +                       +     +192.168.3.2            +
++                       +     +                       +     +                       +
++++++++++++++++++++++++++     +++++++++++++++++++++++++     +++++++++++++++++++++++++
+
+The client (at the UE side) pings the server (@192.168.3.2) to measure the RTT of the communication. 
+Such RTT increases with the interference, hence with the number of background cells in the 
+emulated network.
+IP addresses and routing tables are set up by using mrt files (see "routing_files" folder).
+
+ 
+=== HOW TO BUILD AND RUN ===
+
+1) Make sure that the emulation feature is enabled in the INET project:
+
+- via the IDE: right-click on the 'inet' folder in the Project Explorer -> Properties;
+               select OMNeT++ -> Project Features; 
+               tick the box "Network emulation support".
+- via the command line: in the root INET folder, type 'opp_featuretool enable NetworkEmulationSupport'.
+
+  If the feature was disabled, recompile INET with the command 'make' (in the root INET folder).  
+
+
+2) In order to be able to send/receive packets through sockets, set the application permissions: 
+
+    sudo setcap cap_net_raw,cap_net_admin=eip path/to/opp_run
+    sudo setcap cap_net_raw,cap_net_admin=eip path/to/opp_run_dbg
+    sudo setcap cap_net_raw,cap_net_admin=eip path/to/opp_run_release
+
+
+3) Compile Simu5G from the command line by running (in the root Simu5G folder):
+    $ . setenv
+	$ make makefiles
+	$ make 
+	
+	
+4) Setup the environment by typing:
+
+    ./setup.sh	 
+	 	
+ 	
+5) Run the simulation by typing:
+
+   ./run.sh -r <RUN_NUMBER>
+    
+   where RUN_NUMBER=0 --> 3 background cells
+         RUN_NUMBER=1 --> 6 background cells
+         RUN_NUMBER=2 --> 9 background cells
+ 
+   
+6) Run the sender application, e.g. by typing the command:
+ 
+    (in a new terminal window) sudo ip netns exec ns1 ping 192.168.3.2
+          
+        
+7) Clean the environment by typing:
+
+    ./teardown.sh
+   
+============================

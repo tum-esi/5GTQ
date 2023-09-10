@@ -1,0 +1,3 @@
+stack/backgroundTrafficGenerator/generators/RtxNotification_m.cc stack/backgroundTrafficGenerator/generators/RtxNotification_m.h : \
+	stack/backgroundTrafficGenerator/generators/RtxNotification.msg
+stack/backgroundTrafficGenerator/generators/RtxNotification.msg:
