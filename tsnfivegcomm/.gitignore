@@ -1,0 +1,9 @@
+out
+src/*.so
+src/*.dll
+src/*.exe
+src/*.a
+src/*.lib
+src/Makefile
+.qtenvrc
+results

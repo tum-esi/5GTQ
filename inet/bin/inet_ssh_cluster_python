@@ -1,9 +1,0 @@
-#!/bin/bash
-
-cd ~/inet-distribution/omnetpp
-source setenv
-
-cd ~/inet-distribution/inet
-source setenv
-
-/bin/python3 "$@"

@@ -1,0 +1,3 @@
+cd inet && source setenv && cd - >/dev/null
+cd Simu5G && source setenv && cd - >/dev/null
+cd tsnfivegcomm && source setenv && cd - >/dev/null

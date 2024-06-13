@@ -19,7 +19,7 @@
 #include <omnetpp.h>
 #include "inet/networklayer/common/NetworkInterface.h"
 #include "inet/linklayer/common/FcsMode_m.h"
-#include "common/binder/Binder.h";
+#include "common/binder/Binder.h"
 #include "common/LteCommon.h"
 #include "stack/sdap/QosChecker.h"
 #include "common/binder/GlobalData.h"

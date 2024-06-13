@@ -1,0 +1,14 @@
+#! /bin/sh
+
+TSN5G_SRC=$TSN5G_ROOT/src
+SIMU5G_SRC=$SIMU5G_ROOT/src
+COMMAND_LINE_OPTIONS="-n $TSN5G_ROOT/simulations:$SIMU5G_ROOT/simulations:$SIMU5G_ROOT/emulation:$TSN5G_SRC:$SIMU5G_SRC"
+
+if [ -f $TSN5G_SRC/libtsnfivegcomm.so -o -f $TSN5G_SRC/libtsnfivegcomm.dll -o -f $TSN5G_SRC/libtsnfivegcomm.dylib ]; then
+  inet -l $TSN5G_SRC/tsnfivegcomm $COMMAND_LINE_OPTIONS $*
+elif [ -f $TSN5G_SRC/libtsnfivegcomm_dbg.so -o -f $TSN5G_SRC/libtsnfivegcomm_dbg.dll -o -f $TSN5G_SRC/libtsnfivegcomm_dbg.dylib ]; then
+  inet_dbg -l $TSN5G_SRC/tsnfivegcomm $COMMAND_LINE_OPTIONS $*
+fi
+
+
+

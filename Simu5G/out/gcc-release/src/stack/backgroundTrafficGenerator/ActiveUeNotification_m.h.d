@@ -1,3 +1,0 @@
-stack/backgroundTrafficGenerator/ActiveUeNotification_m.cc stack/backgroundTrafficGenerator/ActiveUeNotification_m.h : \
-	stack/backgroundTrafficGenerator/ActiveUeNotification.msg
-stack/backgroundTrafficGenerator/ActiveUeNotification.msg:
