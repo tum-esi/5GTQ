@@ -1,0 +1,7 @@
+ - check if StandardHost6 (IPv6) is working properly
+
+ - if SCTPServer.echoFactor not 0, then will a runtime error:
+      "Error in module (SCTP) P5.server.sctp (id=22): User error: stream with id 2 not found."
+      Network: IPv4; 1 server, 1 router, 10 client
+
+ - finish making gate names consistent

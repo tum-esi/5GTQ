@@ -1,0 +1,123 @@
+#!/bin/sh
+#
+# This script is intended to run INET simulations both in debug and release mode.
+# It can be used only after the 'setenv' script has been run from both the OMNeT++
+# and the INET top level directory using the '. setenv' command. To run a simulation,
+# simply go into its directory and run 'inet' possibly passing additional command
+# line arguments. Please note that INET must be compiled either in debug and/or
+# release mode using 'make MODE=debug' and/or 'make MODE=release' before.
+#
+# This script takes a few additional command line arguments compared to the ones
+# already allowed by OMNeT++. The command line argument '--release' starts the
+# INET release version and '--debug' starts the debug version. If no such argument
+# is provided, then the script automatically selects one prefering the release
+# version over the debug version. The script can run INET independently of how
+# its compiled, as executable or shared lib.
+#
+
+DIR=$(dirname $0)
+OUT=$DIR/../src
+
+#
+# Note: We intentionally do NOT initialize the TOOL and MODE variables, in order
+# to allow usage like this:
+#
+#  $ TOOL=echo inet_dbg                       ==> print actual command line
+#  $ TOOL=nemiver inet_dbg                    ==> debug using nemiver
+#  $ TOOL="gdb --args" inet_dbg               ==> debug using gdb
+#  $ TOOL="valgrind --tool=memcheck --" inet  ==> find memory problems using valgrind
+#
+
+if [ "$1" = "--release" ]; then
+   # Equivalent to: MODE=release inet
+   MODE="release"
+   shift;
+fi
+
+if [ "$1" = "--debug" ]; then
+   # Equivalent to: MODE=debug inet
+   MODE="debug"
+   shift;
+fi
+
+if [ "$1" = "--sanitize" ]; then
+   # Equivalent to: MODE=sanitize inet
+   MODE="sanitize"
+   shift;
+fi
+
+if [ "$1" = "--printcmd" ] || [ "$1" = "-p" ]; then
+   # Equivalent to: TOOL=echo inet
+   TOOL="echo"
+   shift;
+fi
+
+OPP_RUN_RELEASE=$(which opp_run_release 2> /dev/null || echo opp_run_release)
+OPP_RUN_DBG=$(which opp_run_dbg 2> /dev/null || echo opp_run_dbg)
+OPP_RUN_SANITIZE=$(which opp_run_sanitize 2> /dev/null || echo opp_run_sanitize)
+
+INET_NEDFOLDERS=$(cat $INET_ROOT/.nedfolders | sed "s|^|$INET_ROOT/|" | tr '\n' ':')
+if [ ! "$INET_NEDFOLDERS" = "" ]; then
+  INET_OMNETPP_OPTIONS="-n $INET_NEDFOLDERS $INET_OMNETPP_OPTIONS"
+fi
+
+INET_NEDEXCLUSIONS=$(cat $INET_ROOT/.nedexclusions | tr '\n' ';')
+if [ ! "$INET_NEDEXCLUSIONS" = "" ]; then
+  INET_OMNETPP_OPTIONS="-x $INET_NEDEXCLUSIONS $INET_OMNETPP_OPTIONS"
+fi
+
+if [ "$MODE" = "" ]; then
+  if [ -f $OUT/INET ]; then
+    $TOOL $OUT/INET $INET_OMNETPP_OPTIONS
+  elif [ -f $OUT/INET_dbg ]; then
+    $TOOL $OUT/INET_dbg $INET_OMNETPP_OPTIONS
+  elif [ -f $OUT/INET.exe ]; then
+    $TOOL $OUT/INET.exe $INET_OMNETPP_OPTIONS
+  elif [ -f $OUT/INET_dbg.exe ]; then
+    $TOOL $OUT/INET_dbg.exe $INET_OMNETPP_OPTIONS
+  elif [ -f $OUT/libINET.so ] || [ -f $OUT/INET.dll ] || [ -f $OUT/libINET.dll ] || [ -f $OUT/libINET.dylib ]; then
+    $TOOL $OPP_RUN_RELEASE -l $OUT/../src/INET $INET_OMNETPP_OPTIONS "$@"
+  elif [ -f $OUT/libINET_dbg.so ] || [ -f $OUT/INET_dbg.dll ] || [ -f $OUT/libINET_dbg.dll ] || [ -f $OUT/libINET_dbg.dylib ]; then
+    $TOOL $OPP_RUN_DBG -l $OUT/../src/INET $INET_OMNETPP_OPTIONS "$@"
+  else
+    echo "INET executable or shared library not found"
+    exit 1
+  fi
+elif [ "$MODE" = "release" ]; then
+  if [ -f $OUT/INET ]; then
+    $TOOL $OUT/INET $INET_OMNETPP_OPTIONS
+  elif [ -f $OUT/INET.exe ]; then
+    $TOOL $OUT/INET.exe $INET_OMNETPP_OPTIONS
+  elif [ -f $OUT/libINET.so ] || [ -f $OUT/INET.dll ] || [ -f $OUT/libINET.dll ] || [ -f $OUT/libINET.dylib ]; then
+    $TOOL $OPP_RUN_RELEASE -l $OUT/../src/INET $INET_OMNETPP_OPTIONS "$@"
+  else
+    echo "INET release executable or shared library not found"
+    exit 1
+  fi
+elif [ "$MODE" = "debug" ]; then
+  if [ -f $OUT/INET_dbg ]; then
+    $TOOL $OUT/INET_dbg $INET_OMNETPP_OPTIONS
+  elif [ -f $OUT/INET_dbg.exe ]; then
+    $TOOL $OUT/INET_dbg.exe $INET_OMNETPP_OPTIONS
+  elif [ -f $OUT/libINET_dbg.so ] || [ -f $OUT/INET_dbg.dll ] || [ -f $OUT/libINET_dbg.dll ] || [ -f $OUT/libINET_dbg.dylib ]; then
+    $TOOL $OPP_RUN_DBG -l $OUT/../src/INET $INET_OMNETPP_OPTIONS "$@"
+  else
+    echo "INET debug executable or shared library not found"
+    exit 1
+  fi
+elif [ "$MODE" = "sanitize" ]; then
+  if [ -f $OUT/INET_sanitize ]; then
+    $TOOL $OUT/INET_sanitize $INET_OMNETPP_OPTIONS
+  elif [ -f $OUT/INET_sanitize.exe ]; then
+    $TOOL $OUT/INET_sanitize.exe $INET_OMNETPP_OPTIONS
+  elif [ -f $OUT/libINET_sanitize.so ] || [ -f $OUT/INET_sanitize.dll ] || [ -f $OUT/libINET_sanitize.dll ] || [ -f $OUT/libINET_sanitize.dylib ]; then
+    $TOOL $OPP_RUN_SANITIZE -l $OUT/../src/INET $INET_OMNETPP_OPTIONS "$@"
+  else
+    echo "INET debug executable or shared library not found"
+    exit 1
+  fi
+else
+  echo "Unknown INET execution mode: $MODE"
+  exit 1
+fi
+

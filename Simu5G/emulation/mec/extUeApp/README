@@ -1,0 +1,65 @@
+In this example the network consists of one UE connected to one gNB and a MEC system composed of a MEC host. 
+The UE app run outside the simulator. The UE injects (and receives) packets through the ExtLowerEthernetInterface
+module of the UE.
+
+We configure the following scenario:
+
+   +++++++++++++++++++++++++     +++++++++++++++++++++++++ 
+   +     Namespace ns1     +     +         Simu5G        +
+   +                       +     +                       +
+   +  Ue App         [veth1]<--->[sim-veth1]             +
+   +            192.168.3.2+     +                       +
+   +                       +     +                       + 
+   +++++++++++++++++++++++++     +++++++++++++++++++++++++
+
+IP addresses and routing tables are set up by using mrt files (see "routing" folder).
+The Ue App contacts the DeviceApp within the simulation. The DeviceApp contacts the UALCMP to 
+obtain the IP address/port of the simulated MEC App. Then, the ClientApp subscribes to information from
+the MEC Location Service. The MEC App sends notifications to the ClientApp when the UE enters/leaves a 
+specific geographical zone.
+
+ 
+=== HOW TO BUILD AND RUN ===
+
+1) Make sure that the emulation feature is enabled in the INET project:
+
+- via the IDE: right-click on the 'inet' folder in the Project Explorer -> Properties;
+               select OMNeT++ -> Project Features; 
+               tick the box "Network emulation support".
+- via the command line: in the root INET folder, type 'opp_featuretool enable NetworkEmulationSupport'.
+
+  If the feature was disabled, recompile INET with the command 'make' (in the root INET folder).  
+
+
+2) In order to be able to send/receive packets through sockets, set the application permissions: 
+
+    sudo setcap cap_net_raw,cap_net_admin=eip path/to/opp_run
+    sudo setcap cap_net_raw,cap_net_admin=eip path/to/opp_run_dbg
+    sudo setcap cap_net_raw,cap_net_admin=eip path/to/opp_run_release
+
+
+3) Compile Simu5G from the command line by running (in the root Simu5G folder):
+    $ . setenv
+	$ make makefiles
+	$ make 
+	 	
+	 	 	
+4) Setup the environment by typing:
+
+    ./setup.sh	 
+	 	
+
+5) Run the simulation by typing:
+
+    ./run.sh
+   
+6) Launch the UE App:
+
+    (in a new terminal window) sudo ip netns exec ns1 python3 UeApp.py
+    
+     
+7) Clean the environment by typing:
+
+    ./teardown.sh  
+
+============================
