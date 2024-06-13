@@ -21,7 +21,7 @@ To cite our work, please use the following BibTex code:
 
 Download and install OMNeT++ 6.0.x, then:
 
-    git clone --recurse-submodules git@github.com:inet-framework/5GTQ.git
+    git clone --recurse-submodules git@github.com:tum-esi/5GTQ.git
     cd 5GTQ
     source setenv
     make     # wait for the build to finish
@@ -32,7 +32,7 @@ Download and install OMNeT++ 6.0.x, then:
 
 First clone the repo, then start the IDE:
 
-    git clone --recurse-submodules git@github.com:inet-framework/5GTQ.git
+    git clone --recurse-submodules git@github.com:tum-esi/5GTQ.git
     cd 5GTQ
     opp_ide
 
@@ -40,4 +40,7 @@ First clone the repo, then start the IDE:
 - Import all projects (inet, Simu5G, tsnfivegcomm)
 - Build the **tsnfivegcomm** project (which will also build inet and Simu5G)
 - Go to the `simulations` directory and select a scenario and then select run (or debug)
+
+
+
 
