@@ -15,6 +15,11 @@ To cite our work, please use the following BibTex code:
   pages={1-7},
   doi={10.1109/VTC2023-Fall60731.2023.10333533}}
 ```
+
+# Continuous Updates
+We are working on introducing new features in the 5GTQ framework to support the specific scheduling features of the 5G-TSN simulation. 
+All the updates will be mentioned in the README file.
+
 # Installation
 
 ## Command line
