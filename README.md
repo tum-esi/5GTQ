@@ -47,5 +47,10 @@ First clone the repo, then start the IDE:
 - Go to the `simulations` directory and select a scenario and then select run (or debug)
 
 
+## Important 
+
+5GTQ framework is under continuous development: new features are added, bugs are corrected, and so on. 
+We cannot assert that the implementation will work fully according to the standard and the specifications. 
+YOU ARE RESPONSIBLE YOURSELF TO MAKE SURE THAT THE MODELS YOU USE IN YOUR SIMULATIONS WORK CORRECTLY, AND YOU ARE GETTING VALID RESULTS.
 
 
