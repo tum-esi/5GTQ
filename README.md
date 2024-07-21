@@ -47,6 +47,13 @@ First clone the repo, then start the IDE:
 - Go to the `simulations` directory and select a scenario and then select run (or debug)
 
 
+## Current Freatures
+- TSN - TAS Scheduling
+- TSN - CBS Scheculing
+- TSN - SP
+- 5G - Priority Scheduling
+- 5G - QoS based Scheduling
+
 ## Important 
 
 5GTQ framework is under continuous development: new features are added, bugs are corrected, and so on. 
