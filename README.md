@@ -18,7 +18,9 @@ To cite our work, please use the following BibTex code:
 
 # Additional Resources for installation
 https://github.com/omnetpp/opp_env/releases/tag/0.34.0.250529
+
 https://github.com/Unipisa/Simu5G/tree/5gtq
+
 https://github.com/inet-framework/inet/tree/topic/5gtq
 
 # Regular Feature Updates
